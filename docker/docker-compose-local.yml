@@ -13,6 +13,16 @@ services:
         volumes:
             - "${PWD}/db-data:/var/lib/postgresql/data"
 
+    my_mysql_db:
+        hostname: sakiladbhost
+        image: sakiladb/mysql:latest
+        logging:
+            options:
+                max-size: 10m
+                max-file: "3"
+        ports:
+            - "3306:3306"
+
     local-runner:
         image: amazon/mwaa-local:2_8
         restart: always
@@ -26,6 +36,7 @@ services:
                 max-size: 10m
                 max-file: "3"
         volumes:
+            - "${HOME}/.aws:/usr/local/airflow/.aws"
             - "${PWD}/dags:/usr/local/airflow/dags"
             - "${PWD}/plugins:/usr/local/airflow/plugins"
             - "${PWD}/requirements:/usr/local/airflow/requirements"
@@ -38,5 +49,5 @@ services:
             interval: 30s
             timeout: 30s
             retries: 3
-        env_file:
+env_file:
             - ./config/.env.localrunner
